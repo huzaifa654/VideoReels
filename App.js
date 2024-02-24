@@ -25,7 +25,11 @@ export default function App() {
     {
       reel: require("./assets/rm.mp4"),
       id: 3
-    }
+    },
+    {
+      reel: require("./assets/bugs.mp4"),
+      id: 4
+    },
   ]
   return (
     <View style={{ flex: 1 }}>

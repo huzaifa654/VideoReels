@@ -12,9 +12,6 @@ export default function VideoReel({ item, index, currentIndex }) {
             seticon(false)
         }, 2000);
 
-        if (!!videoRef.current) {
-            videoRef.current.seek(0)
-        }
     }, [icon, currentIndex])
     // console.log("item===========", item)
     return (
