@@ -1,14 +1,39 @@
 import { StyleSheet, Text, View, Dimensions, StatusBar, Image, TouchableOpacity } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import Video from 'react-native-video';
+import BottomSheet from './Components/BottomSheet';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 const { width, height } = Dimensions.get('window');
 
-export default function VideoReel({ item, index, currentIndex }) {
+export default function VideoReel({ item, index, currentIndex, }) {
     const videoRef = useRef(null)
     const [Mute, setMute] = useState(false)
     const [icon, seticon] = useState(false)
     const [like, setlike] = useState(false)
     const [follow, setfollow] = useState(false)
+    const bottomSheetModalRef = useRef(null);
+    const startDragY = useRef(0);
+    const handleGestureStart = (event) => {
+        startDragY.current = event.nativeEvent.pageY;
+    };
+
+    const handleGestureEnd = (event) => {
+        const endDragY = event.nativeEvent.pageY;
+        const dragDistance = startDragY.current - endDragY;
+        console.log("dragDistance", dragDistance)
+        if (dragDistance > 100) {
+            bottomSheetModalRef.current?.dismiss();
+        }
+    };
+
+    const openBottomSheet = () => {
+        bottomSheetModalRef.current?.present();
+    };
+    const handleClose = () => {
+        bottomSheetModalRef.current?.dismiss();
+    };
     useEffect(() => {
         icon && setTimeout(() => {
             seticon(false)
@@ -17,64 +42,89 @@ export default function VideoReel({ item, index, currentIndex }) {
     }, [icon, currentIndex])
     // console.log("item===========", item)
     return (
-        <View style={styles?.container}>
-            <StatusBar backgroundColor={"black"} />
-            <View style={styles?.reels}>
-                <Text style={styles?.text}>Reels</Text>
-                <Image source={require("./assets/camera.png")} resizeMode='contain' style={styles?.img} />
-            </View >
-            <TouchableOpacity style={{ backgroundColor: "red" }}
-                onPress={() => {
-                    setMute(!Mute);
-                    seticon(true)
-                }}
-                activeOpacity={4}
-            >
-                <Video
-                    ref={videoRef}
-                    source={item?.reel}
-                    style={styles.backgroundVideo}
-                    resizeMode="contain"
-                    repeat={true}
-                    muted={Mute}
-                    paused={currentIndex !== index}
-                // playWhenInactive={false}
-                // playInBackground={false}
-                />
-                {icon &&
-                    <View style={styles?.muteConatiner}>
-                        <Image source={Mute ? require("./assets/mute.png") : require("./assets/volume.png")} style={styles?.mute} resizeMode='contain' />
-                    </View>
-                }
+        <GestureHandlerRootView style={styles?.container}>
+            <BottomSheetModalProvider>
+                <StatusBar backgroundColor={"black"} />
+                <View style={styles?.reels}>
+                    <Text style={styles?.text}>Reels</Text>
+                    <Image source={require("./assets/camera.png")} resizeMode='contain' style={styles?.img} />
+                </View >
+                <TouchableOpacity style={{ backgroundColor: "red" }}
+                    onPress={() => {
+                        setMute(!Mute);
+                        seticon(true)
+                    }}
+                    activeOpacity={4}
+                >
+                    <Video
+                        ref={videoRef}
+                        source={item?.reel}
+                        style={styles.backgroundVideo}
+                        resizeMode="contain"
+                        repeat={true}
+                        muted={Mute}
+                        paused={currentIndex !== index}
+                    // playWhenInactive={false}
+                    // playInBackground={false}
+                    />
+                    {icon &&
+                        <View style={styles?.muteConatiner}>
+                            <Image source={Mute ? require("./assets/mute.png") : require("./assets/volume.png")} style={styles?.mute} resizeMode='contain' />
+                        </View>
+                    }
 
-            </TouchableOpacity>
-            <View style={styles?.comment}>
-
-                <TouchableOpacity onPress={() => setlike(!like)}>
-                    <Image source={like ? require("./assets/fill.png") : require("./assets/heart.png")} style={[styles.insta, { tintColor: like ? "red" : "white" }]} resizeMode='contain' />
-                    <Text style={styles?.commentText}>23K</Text>
                 </TouchableOpacity>
+                <View style={styles?.comment}>
+
+                    <TouchableOpacity onPress={() => setlike(!like)}>
+                        <Image source={like ? require("./assets/fill.png") : require("./assets/heart.png")} style={[styles.insta, { tintColor: like ? "red" : "white" }]} resizeMode='contain' />
+                        <Text style={styles?.commentText}>23K</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={openBottomSheet}>
+                        <Image source={require("./assets/chat.png")} style={styles.insta} resizeMode='contain' />
+                        <Text style={styles?.commentText}>1,165</Text>
+                    </TouchableOpacity>
 
 
-                <Image source={require("./assets/chat.png")} style={styles.insta} resizeMode='contain' />
-                <Text style={styles?.commentText}>1,165</Text>
+                    <Image source={require("./assets/send.png")} style={styles.insta} resizeMode='contain' />
+                    <Text style={styles?.commentText}>398K</Text>
 
-                <Image source={require("./assets/send.png")} style={styles.insta} resizeMode='contain' />
-                <Text style={styles?.commentText}>398K</Text>
+                </View>
 
-            </View>
+                <View style={styles?.profileContainer}>
 
-            <View style={styles?.profileContainer}>
-                <Image source={item?.profile} style={styles.profile} resizeMode='contain' />
-                <Text style={styles?.profileText}>{item?.username}</Text>
-                <TouchableOpacity onPress={() => setfollow(!follow)} style={styles.followConatiner}>
-                    <Text style={styles?.followText}>{follow ? "Following" : "Follow"}</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.captionContainer}>
-                <Text style={styles?.captionText}>{item?.caption}</Text>
-            </View>
-        </View>
+                    <Image source={item?.profile} style={styles.profile} resizeMode='contain' />
+                    <Text style={styles?.profileText}>{item?.username}</Text>
+
+                    <TouchableOpacity onPress={() => setfollow(!follow)} style={styles.followConatiner}>
+                        <Text style={styles?.followText}>{follow ? "Following" : "Follow"}</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.captionContainer}>
+                    <Text style={styles?.captionText}>{item?.caption}</Text>
+                </View>
+                <BottomSheetModal
+                    ref={bottomSheetModalRef}
+                    index={0}
+                    snapPoints={['50%']}
+                    onChange={(index, gestureState) => {
+                        if (index === -1 && gestureState === 'end') {
+                            bottomSheetModalRef.current?.dismiss();
+                        }
+                    }}
+                >
+                    <BottomSheetScrollView
+                        onTouchStart={handleGestureStart}
+                        onTouchEnd={handleGestureEnd}>
+                        <View style={styles.content}>
+                            <Text>Content of the bottom sheet goes here</Text>
+                        </View>
+                    </BottomSheetScrollView>
+                </BottomSheetModal>
+            </BottomSheetModalProvider>
+        </GestureHandlerRootView>
+
     )
 }
 
@@ -85,6 +135,7 @@ const styles = StyleSheet.create({
         height: height
 
     },
+
     backgroundVideo: {
         backgroundColor: "black",
         width: width,
@@ -205,5 +256,24 @@ const styles = StyleSheet.create({
     captionText: {
         color: "white",
         fontSize: 18
-    }
+    },
+    handleIndicator: {
+        height: 4,
+        width: 40,
+        borderRadius: 2,
+        backgroundColor: 'gray',
+    },
+    handleIndicatorEnd: {
+        marginBottom: -4,
+    },
+    handleContainer: {
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    handle: {
+        width: 40,
+        height: 4,
+        borderRadius: 2,
+        backgroundColor: 'gray',
+    },
 })
