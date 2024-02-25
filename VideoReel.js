@@ -7,6 +7,8 @@ export default function VideoReel({ item, index, currentIndex }) {
     const videoRef = useRef(null)
     const [Mute, setMute] = useState(false)
     const [icon, seticon] = useState(false)
+    const [like, setlike] = useState(false)
+    const [follow, setfollow] = useState(false)
     useEffect(() => {
         icon && setTimeout(() => {
             seticon(false)
@@ -48,8 +50,11 @@ export default function VideoReel({ item, index, currentIndex }) {
             </TouchableOpacity>
             <View style={styles?.comment}>
 
-                <Image source={require("./assets/heart.png")} style={styles.insta} resizeMode='contain' />
-                <Text style={styles?.commentText}>23K</Text>
+                <TouchableOpacity onPress={() => setlike(!like)}>
+                    <Image source={like ? require("./assets/fill.png") : require("./assets/heart.png")} style={[styles.insta, { tintColor: like ? "red" : "white" }]} resizeMode='contain' />
+                    <Text style={styles?.commentText}>23K</Text>
+                </TouchableOpacity>
+
 
                 <Image source={require("./assets/chat.png")} style={styles.insta} resizeMode='contain' />
                 <Text style={styles?.commentText}>1,165</Text>
@@ -60,15 +65,14 @@ export default function VideoReel({ item, index, currentIndex }) {
             </View>
 
             <View style={styles?.profileContainer}>
-                <Image source={require("./assets/profile.jpg")} style={styles.profile} resizeMode='contain' />
-                <Text style={styles?.profileText}>explorish_</Text>
-                <View style={styles.followConatiner}>
-                    <Text style={styles?.followText}>Follow</Text>
-                </View>
+                <Image source={item?.profile} style={styles.profile} resizeMode='contain' />
+                <Text style={styles?.profileText}>{item?.username}</Text>
+                <TouchableOpacity onPress={() => setfollow(!follow)} style={styles.followConatiner}>
+                    <Text style={styles?.followText}>{follow ? "Following" : "Follow"}</Text>
+                </TouchableOpacity>
             </View>
             <View style={styles.captionContainer}>
-                <Text style={styles?.captionText}>Motivation 😌
-                    😍!!!</Text>
+                <Text style={styles?.captionText}>{item?.caption}</Text>
             </View>
         </View>
     )
@@ -123,7 +127,7 @@ const styles = StyleSheet.create({
     },
     comment: {
         position: "absolute",
-        bottom: 80,
+        bottom: 135,
         right: 12,
     },
     commentText: {
@@ -135,7 +139,7 @@ const styles = StyleSheet.create({
     },
     profileContainer: {
         position: "absolute",
-        bottom: 55,
+        bottom: 100,
         flexDirection: "row",
         left: 23
 
@@ -159,11 +163,11 @@ const styles = StyleSheet.create({
     },
     followConatiner: {
         borderWidth: 1.5,
-        borderRadius: 15,
+        borderRadius: 8,
         borderColor: "white",
         paddingHorizontal: 23,
         // width: 120,
-        height: 45,
+        height: 35,
         alignItems: "center",
         // backgroundColor: "pink",
         marginLeft: 23,
@@ -171,7 +175,7 @@ const styles = StyleSheet.create({
     },
     followText: {
         color: "white",
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: "600",
     },
     mute: {
@@ -195,7 +199,7 @@ const styles = StyleSheet.create({
     },
     captionContainer: {
         position: "absolute",
-        bottom: 15,
+        bottom: 68,
         left: 30
     },
     captionText: {

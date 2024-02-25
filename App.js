@@ -16,18 +16,30 @@ export default function App() {
   const Data = [
     {
       reel: require("./assets/Reel.mp4"),
+      caption: "Tag your freind..",
+      username: "Tezen_",
+      profile: require("./assets/Profile1.jpg"),
       id: 1
     },
     {
       reel: require("./assets/Rool.mp4"),
+      caption: "Motvivation!!",
+      username: "__zainu",
+      profile: require("./assets/Profile2.jpg"),
       id: 2
     },
     {
       reel: require("./assets/rm.mp4"),
+      caption: "Travel....",
+      username: "__.n.d._",
+      profile: require("./assets/Profile3.jpg"),
       id: 3
     },
     {
       reel: require("./assets/bugs.mp4"),
+      caption: "Life of programmers !!",
+      username: "__coader",
+      profile: require("./assets/profile.jpg"),
       id: 4
     },
   ]
