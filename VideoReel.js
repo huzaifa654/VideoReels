@@ -81,7 +81,7 @@ export default function VideoReel({ item, index, currentIndex, }) {
                         <Text style={styles?.commentText}>23K</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={openBottomSheet}>
+                    <TouchableOpacity>
                         <Image source={require("./assets/chat.png")} style={styles.insta} resizeMode='contain' />
                         <Text style={styles?.commentText}>1,165</Text>
                     </TouchableOpacity>
